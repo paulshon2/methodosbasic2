@@ -1,6 +1,12 @@
 import Link from "next/link";
 import { Download } from "lucide-react";
-import { MAC_DMG_ARTIFACTS, WIN_ARTIFACT, productDisplayName } from "@/lib/product";
+import {
+  MAC_DMG_ARTIFACTS,
+  SUBSCRIPTION_PLANS,
+  WIN_ARTIFACT,
+  WINDOWS_NOTES,
+  productDisplayName,
+} from "@/lib/product";
 
 function DownloadButton({ artifactId }: { artifactId: string }) {
   return (
@@ -63,9 +69,32 @@ export function DownloadPageContent() {
       <div className="mx-auto mt-12 max-w-xl rounded-2xl border border-brand/20 bg-brand-wash/60 p-6 text-left">
         <h2 className="font-semibold text-ink">Window 및 Mac의 실행 안내</h2>
         <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-ink-2">
-          <li>첫 실행 시 2~3분 정도 소요될 수 있습니다.</li>
-          <li>SmartScreen 경고 시 추가 정보에서 실행을 하시면 됩니다.</li>
+          {WINDOWS_NOTES.map((note) => (
+            <li key={note}>{note}</li>
+          ))}
         </ul>
+      </div>
+      <div className="mx-auto mt-10 max-w-2xl rounded-2xl border border-line bg-white p-6 text-left">
+        <h2 className="font-semibold text-ink">라이선스 · 구독 기간</h2>
+        <p className="mt-2 text-sm leading-relaxed text-ink-2">
+          구매한 인증키로 처음 한 번 이 PC를 활성화합니다. 기간은 발급일이 아니라{" "}
+          <strong className="font-semibold text-ink">처음 활성화한 날</strong>부터 계산되며, 아래 기간
+          중에서 선택할 수 있습니다.
+        </p>
+        <div className="mt-4 flex flex-wrap gap-2">
+          {SUBSCRIPTION_PLANS.map((plan) => (
+            <span
+              key={plan.months}
+              className="rounded-full border border-brand/30 bg-brand-wash/60 px-4 py-1.5 text-sm font-semibold text-brand"
+            >
+              {plan.label}
+            </span>
+          ))}
+        </div>
+        <p className="mt-4 text-xs text-ink-3">
+          인증키는 활성화한 PC에만 묶입니다. 인터넷이 없는 환경에서는 요청/응답 코드로 오프라인
+          활성화할 수 있습니다. 문의는 아래 연락처로 보내 주세요.
+        </p>
       </div>
       <p className="mt-8 text-center text-sm text-ink-3">
         라이선스·고지 전문은{" "}
