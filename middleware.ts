@@ -10,6 +10,14 @@ const isPublic = createRouteMatcher([
   "/login(.*)",
   "/signup(.*)",
   "/api/download(.*)",
+  // 인증키 서버 — 앱(데스크톱)이 부른다. 보호는 서명·관리자 토큰으로 하므로 Clerk 로그인은 요구하지 않는다.
+  "/api/activate",
+  "/api/renew",
+  "/api/deactivate",
+  "/api/offline-activate",
+  "/api/license-health",
+  "/admin/keys(.*)",
+  "/offline(.*)",
 ]);
 
 const hasClerk = !!(process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY || "").trim();

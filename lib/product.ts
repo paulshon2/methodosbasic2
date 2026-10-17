@@ -8,7 +8,7 @@ export const PRODUCT = {
   version: "22.19.0-LT.V4-R19-Ngraph-AuthV1",
 } as const;
 
-export type ArtifactId = "win-portable" | "mac-x64-dmg" | "mac-arm64-dmg";
+export type ArtifactId = "win-portable" | "win-setup" | "mac-x64-dmg" | "mac-arm64-dmg";
 
 export type ReleaseArtifact = {
   id: ArtifactId;
@@ -28,6 +28,16 @@ export const WIN_ARTIFACT: ReleaseArtifact = {
   fileName: "MethodosBasic-LT-4-all-v4-R19-Ngraph-AuthV1.exe",
   sizeHint: "~175 MB",
   envKey: "NEXT_PUBLIC_DOWNLOAD_WIN_PORTABLE_URL",
+};
+
+export const WIN_SETUP_ARTIFACT: ReleaseArtifact = {
+  id: "win-setup",
+  label: "Windows 설치형",
+  platform: "Windows",
+  description: "설치 마법사로 설치하고 바탕화면·시작 메뉴에서 실행합니다.",
+  fileName: "MethodosBasic-LT-4-all-v4-R19-Ngraph-AuthV1-Setup.exe",
+  sizeHint: "~175 MB",
+  envKey: "NEXT_PUBLIC_DOWNLOAD_WIN_SETUP_URL",
 };
 
 export const MAC_DMG_ARTIFACTS: ReleaseArtifact[] = [
@@ -52,7 +62,7 @@ export const MAC_DMG_ARTIFACTS: ReleaseArtifact[] = [
 ];
 
 /** @deprecated use WIN_ARTIFACT + MAC_DMG_ARTIFACTS */
-export const ARTIFACTS: ReleaseArtifact[] = [WIN_ARTIFACT, ...MAC_DMG_ARTIFACTS];
+export const ARTIFACTS: ReleaseArtifact[] = [WIN_ARTIFACT, WIN_SETUP_ARTIFACT, ...MAC_DMG_ARTIFACTS];
 
 export const STATS = [
   { value: "43", label: "통계 기법" },
@@ -100,7 +110,7 @@ export const SUBSCRIPTION_PLANS = [
 export const WINDOWS_NOTES = [
   "첫 실행 시 20~30초 정도 걸릴 수 있습니다(임시 폴더에 엔진 풀기). %TEMP% 여유 공간 약 1GB를 권장합니다.",
   "코드 서명 인증서가 없어 Windows SmartScreen 경고가 뜰 수 있습니다. 「추가 정보 → 실행」으로 진행하세요.",
-  "처음 실행하면 인증키 입력 창이 뜹니다. 인터넷이 있으면 바로, 없으면 오프라인 요청/응답 코드로 활성화합니다.",
+  "처음 실행하면 인증키 입력 창이 뜹니다. 인터넷이 있으면 바로, 없으면 오프라인 요청/응답 코드로 활성화합니다(오프라인 발급 페이지: methodosbasic2.vercel.app/offline).",
   "작업 자료는 기본적으로 exe 옆 Data 폴더에 저장됩니다.",
 ] as const;
 

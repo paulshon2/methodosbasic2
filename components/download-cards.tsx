@@ -4,6 +4,7 @@ import {
   MAC_DMG_ARTIFACTS,
   SUBSCRIPTION_PLANS,
   WIN_ARTIFACT,
+  WIN_SETUP_ARTIFACT,
   WINDOWS_NOTES,
   productDisplayName,
 } from "@/lib/product";
@@ -25,16 +26,18 @@ export function DownloadCards() {
 
   return (
     <div className="mx-auto flex w-full max-w-md flex-col items-center gap-10 text-center">
-      <div className="w-full rounded-2xl border border-line bg-white px-6 py-8 shadow-sm">
-        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-brand">{win.platform}</p>
-        <h3 className="mt-2 text-lg font-semibold text-ink">{win.label}</h3>
-        <p className="mt-1 text-[11px] text-ink-3">{win.sizeHint}</p>
-        <p className="mt-4 text-sm leading-relaxed text-ink-2">{win.description}</p>
-        <p className="mt-3 break-all font-mono text-[11px] text-ink-3">{win.fileName}</p>
-        <div className="mt-6 flex justify-center">
-          <DownloadButton artifactId={win.id} />
+      {[win, WIN_SETUP_ARTIFACT].map((a) => (
+        <div key={a.id} className="w-full rounded-2xl border border-line bg-white px-6 py-8 shadow-sm">
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-brand">{a.platform}</p>
+          <h3 className="mt-2 text-lg font-semibold text-ink">{a.label}</h3>
+          <p className="mt-1 text-[11px] text-ink-3">{a.sizeHint}</p>
+          <p className="mt-4 text-sm leading-relaxed text-ink-2">{a.description}</p>
+          <p className="mt-3 break-all font-mono text-[11px] text-ink-3">{a.fileName}</p>
+          <div className="mt-6 flex justify-center">
+            <DownloadButton artifactId={a.id} />
+          </div>
         </div>
-      </div>
+      ))}
 
       <div className="w-full rounded-2xl border border-line bg-white px-6 py-8 shadow-sm">
         <p className="text-xs font-semibold uppercase tracking-[0.2em] text-brand">macOS</p>
