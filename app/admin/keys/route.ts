@@ -6,14 +6,14 @@ export const dynamic = "force-dynamic";
 
 export async function GET(req: Request) {
   return handle(async () => {
-    requireAdmin(req);
+    await requireAdmin(req);
     return { keys: await adminList() };
   });
 }
 
 export async function POST(req: Request) {
   return handle(async () => {
-    requireAdmin(req);
+    await requireAdmin(req);
     return adminCreate(await readJson(req));
   });
 }

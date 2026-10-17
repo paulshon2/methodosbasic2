@@ -62,3 +62,21 @@ LICENSE_SERVER=https://methodosbasic2.vercel.app ADMIN_TOKEN=...   node tools/ad
 
 - `.env.local`은 Git에 올리지 마세요.
 - `node_modules`, `.next`는 `.gitignore` 처리됨.
+
+## 관리 웹페이지 (`/admin`) — Clerk 로그인으로 키 발급·연장·해지
+
+`https://methodosbasic2.vercel.app/admin` — CLI 없이 브라우저에서 인증키를 관리한다.
+
+- **발급**: 받는 사람·메모, **기간(1~11개월, 1년, 2년, 3년)**, 허용 PC 수를 고르고 "인증키 발급". 기간은 구매자가 처음 활성화한 날부터 센다.
+- **목록**: 키·대상·기간·만료일·상태·사용 PC. 검색, 키 복사, **+1개월/+3개월/+1년 연장**, **해지**, PC 등록 **해제**(PC 교체 때). 해지된 키는 연장하면 복구된다.
+- **인증**: Clerk 로그인 + **허용 목록**. 목록에 없는 계정(가입은 누구나 가능)은 "접근 권한이 없습니다".
+  - `ADMIN_EMAILS` — 관리자 이메일(쉼표 구분). Clerk 에서 **인증이 끝난 이메일**만 인정.
+  - `ADMIN_PHONES` — 관리자 휴대폰(쉼표 구분). `010-1234-5678` 과 `+82 10 1234 5678` 은 같은 번호. **인증이 끝난 번호**만 인정.
+  - `ADMIN_CLERK_USER_IDS` — (선택) Clerk 사용자 ID 로 직접 지정.
+  - 세 목록이 모두 비어 있으면 **아무도 들어올 수 없다**(설정 누락 = 닫힘).
+- 같은 사이트 화면에서 온 요청만 세션 인증을 받는다(`x-admin-ui` 헤더). CLI 용 `x-admin-token` 경로(`LICENSE_ADMIN_TOKEN`)는 그대로 있다.
+- `/admin-preview` 는 개발 미리보기(토큰 입력)이며 **운영에서는 404** 다.
+
+### Clerk 에서 휴대폰 로그인을 켜려면
+Clerk Dashboard → **User & authentication** → **Phone number** 를 켠다(가입·로그인 식별자, 인증 방법 SMS 코드).
+SMS 발송 가능 국가에 대한민국이 포함되는지는 대시보드의 SMS 설정에서 확인한다. 이메일만 쓸 거면 건너뛰어도 된다.

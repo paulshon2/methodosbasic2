@@ -18,6 +18,7 @@ const isPublic = createRouteMatcher([
   "/api/license-health",
   "/admin/keys(.*)",
   "/offline(.*)",
+  "/admin-preview(.*)", // 운영에서는 페이지가 404 이고, 개발 미리보기는 토큰으로 인증한다
 ]);
 
 const hasClerk = !!(process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY || "").trim();
@@ -27,7 +28,10 @@ const clerkHandler = clerkMiddleware(async (auth, req) => {
   const { userId } = await auth();
   if (!userId) {
     const url = req.nextUrl.clone();
+    const back = req.nextUrl.pathname + req.nextUrl.search;
     url.pathname = "/login";
+    url.search = "";
+    url.searchParams.set("redirect_url", back);
     return NextResponse.redirect(url);
   }
 });

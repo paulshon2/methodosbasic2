@@ -1,6 +1,8 @@
 /** 라이선스 API 공통: JSON 읽기(크기 제한), 오류 변환, 관리자 토큰, 간이 요청 제한. */
 import crypto from "node:crypto";
 import { NextResponse } from "next/server";
+import { clerkConfigured } from "@/lib/clerk";
+import { checkClerkAdmin } from "@/lib/admin/clerk-admin";
 import { ApiError } from "./core";
 
 const MAX_BODY = 16 * 1024;
@@ -30,14 +32,28 @@ export function rateLimit(req: Request) {
   }
 }
 
-export function requireAdmin(req: Request) {
+/**
+ * 관리자 확인 — 두 길 중 하나면 된다.
+ *  1) 발급 도구(CLI)의 헤더 x-admin-token (LICENSE_ADMIN_TOKEN 과 같을 때)
+ *  2) 관리 웹페이지: Clerk 로그인 세션이 허용 목록(ADMIN_EMAILS·ADMIN_CLERK_USER_IDS)에 있을 때.
+ *     이 경로는 같은 사이트의 화면만 부를 수 있도록 헤더 x-admin-ui 도 요구한다(교차 사이트 요청 차단).
+ */
+export async function requireAdmin(req: Request): Promise<void> {
   const expected = (process.env.LICENSE_ADMIN_TOKEN || "").trim();
-  if (!expected) throw new ApiError(503, "admin_disabled", "관리자 토큰(LICENSE_ADMIN_TOKEN)이 설정되지 않았습니다.");
-  const given = Buffer.from(req.headers.get("x-admin-token") || "");
-  const want = Buffer.from(expected);
-  if (given.length !== want.length || !crypto.timingSafeEqual(given, want)) {
-    throw new ApiError(401, "unauthorized", "관리자 토큰이 필요합니다.");
+  const header = req.headers.get("x-admin-token");
+  if (header && expected) {
+    const given = Buffer.from(header);
+    const want = Buffer.from(expected);
+    if (given.length === want.length && crypto.timingSafeEqual(given, want)) return;
   }
+  if (req.headers.get("x-admin-ui") === "1") {
+    const check = await checkClerkAdmin();
+    if (check.state === "ok") return;
+  }
+  if (!expected && !clerkConfigured()) {
+    throw new ApiError(503, "admin_disabled", "관리자 인증이 설정되지 않았습니다 (LICENSE_ADMIN_TOKEN 또는 Clerk).");
+  }
+  throw new ApiError(401, "unauthorized", "관리자 인증이 필요합니다.");
 }
 
 export async function handle(fn: () => Promise<unknown>): Promise<Response> {

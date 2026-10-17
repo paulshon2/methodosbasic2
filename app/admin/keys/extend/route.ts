@@ -6,7 +6,7 @@ export const dynamic = "force-dynamic";
 
 export async function POST(req: Request) {
   return handle(async () => {
-    requireAdmin(req);
+    await requireAdmin(req);
     return adminExtend(await readJson(req));
   });
 }
