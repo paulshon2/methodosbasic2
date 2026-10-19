@@ -1,5 +1,6 @@
-# MethodosBasic
+
 # METHODOSBASIC
+
 ## Intellectual Property Rights and Legal Notice
 
 **Copyright © 2026 MethodosLab. All Rights Reserved.**
